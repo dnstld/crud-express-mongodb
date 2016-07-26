@@ -9,24 +9,26 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.get('/', (req, res) => {
-	res.sendFile(__dirname + '/index.html')
+	res.sendFile(__dirname + '/index.html');
 });
 
 app.post('/quotes',(req, res) => {
 	db.collection('quotes').save(req.body, (err, result) => {
-    if (err) return console.log(err)
+		if (err) return console.log(err)
 
-    console.log('saved to database')
-    res.redirect('/')
-  })
+		console.log('saved to database');
+		res.redirect('/');
+	})
 });
 
 MongoClient.connect('mongodb://denistoledo:mngdb01012016@ds027175.mlab.com:27175/homer-simpson-quotes', (err, database) => {
-  if (err) return console.log(err)
+	if (err) return console.log(err);
 
-  db = database
+	db = database;
 
 	app.listen(3000, function() {
-		console.log('listening on 3000');
+		db.collection('quotes').find().toArray(function(err, results) {
+			console.log(results);
+		});
 	});
 });
