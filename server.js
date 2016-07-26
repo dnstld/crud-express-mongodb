@@ -9,12 +9,18 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.get('/', (req, res) => {
-	res.sendFile(__dirname + '/index.html');
+	db.collection('quotes').find().toArray((err, result) => {
+	if (err) return console.log(err)
+		// renders index.ejs
+		res.render('index.ejs', {
+			quotes: result
+		});
+	});
 });
 
 app.post('/quotes',(req, res) => {
 	db.collection('quotes').save(req.body, (err, result) => {
-		if (err) return console.log(err)
+		if (err) return console.log(err);
 
 		console.log('saved to database');
 		res.redirect('/');
@@ -28,7 +34,7 @@ MongoClient.connect('mongodb://denistoledo:mngdb01012016@ds027175.mlab.com:27175
 
 	app.listen(3000, function() {
 		db.collection('quotes').find().toArray(function(err, results) {
-			console.log(results);
+			app.set('view engine', 'ejs')
 		});
 	});
 });
